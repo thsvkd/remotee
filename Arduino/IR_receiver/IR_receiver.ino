@@ -1,40 +1,48 @@
-#include <IRremote.h>
+unsigned int pinIR = 6;         // IR sensor pin
+unsigned int currentPulse = 0;  // Pulse index
+unsigned long pulses[100][2];   // Array of high and low pulse
+unsigned long maxPulse = 50000; // Maximum listen duration (65 msec)
 
-int RECV_PIN = 5;
-
-unsigned int ON[] = {0xA, 0x2,0x5, 0xD};
-unsigned int OFF[]= {0xE, 0x2,0x1, 0xD};
-
-IRrecv irrecv(RECV_PIN);
-IRsend irsend;
-
-decode_results results;
-
-void send() 
-{
-  if (Serial.read() != -1) {
-    for (int i = 0; i < 3; i++) {
-      irsend.sendRaw(ON, 1000, 65000); // Sony TV power code
-      delay(40);
-    }
-  }
-}
-
-void read()
-{
-  if (irrecv.decode(&results)) {
-    Serial.println(results.value, HEX);
-    irrecv.resume(); // Receive the next value
-  }
-}
-
-void setup()
+void setup(void)
 {
   Serial.begin(9600);
-  irrecv.enableIRIn(); // Start the receiver
+  Serial.println("Ready to decode IR!");
 }
 
-void loop() {
-  read();
-  //send();
+void loop(void)
+{
+  unsigned long highPulse = 0; // Pulse length
+  unsigned long lowPulse = 0;
+  unsigned long currTime = micros();
+
+  while (digitalRead(pinIR))
+  {
+    highPulse = micros() - currTime;
+    if ((highPulse >= maxPulse) && (currentPulse != 0))
+    {
+      printPulses();
+      currentPulse = 0;
+    }
+  }
+  pulses[currentPulse][0] = highPulse;
+  currTime = micros();
+
+  while (!digitalRead(pinIR))
+  {
+    lowPulse = micros() - currTime;
+  }
+  pulses[currentPulse][1] = lowPulse;
+  currentPulse++;
+}
+
+void printPulses(void)
+{
+  for (int i = 0; i < currentPulse - 1; i++)
+  {
+    Serial.print(pulses[i][1], DEC);
+    Serial.print(",-");
+    Serial.print(pulses[i + 1][0], DEC);
+    Serial.print(",");
+  }
+  Serial.println(pulses[currentPulse - 1][1], DEC);
 }

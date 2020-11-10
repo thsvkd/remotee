@@ -40,7 +40,7 @@ void printPulses(void)
   for (int i = 0; i < currentPulse - 1; i++)
   {
     Serial.print(pulses[i][1], DEC);
-    Serial.print(",-");
+    Serial.print(",");
     Serial.print(pulses[i + 1][0], DEC);
     Serial.print(",");
   }

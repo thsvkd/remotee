@@ -1,10 +1,10 @@
 # remotee project
-Clone every remote control in the world and make it yours! Through this project, you can create an all-around remote control that can be controlled without a remote control by replicating the device. The project is designed to run not only on Arduino but also on one-board computers like Raspberry Pie.
+Clone every remote control in the world and make it yours! Through this project, you can create an all-around remote control that can be controlled without a remote control by replicating the device. The project is designed for Arduino support board.
 
 # circuit diagram
 ![아두이노 회로도 small](https://user-images.githubusercontent.com/53033449/98937280-84fd1f00-2529-11eb-830a-0f5e8226b947.jpg)
 
-
+## materials
     Arduino MKR Zero board x 1
     1k Ohm resistor        x 5
     IR receiver            x 1
